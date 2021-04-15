@@ -1,4 +1,4 @@
-//import Container from '@material-ui/core/Container';
+import Container from '@material-ui/core/Container';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,12 +9,15 @@ import BookIcon from '@material-ui/icons/Book';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 
-import ListarLivros from './components/livros/index.jsx'
+import ListarLivros from './components/livros/index'
 
 const useStyles = makeStyles((theme) => ({
 
   root: {
-    paddingTop: 50,
+    paddingTop: 55,
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 70,
+    },
   },
 
   title: {
@@ -98,7 +101,9 @@ function App() {
 
         </Toolbar>
       </AppBar>
-      <ListarLivros />
+      <Container>
+        <ListarLivros />
+      </Container>
     </div>
     
   );
