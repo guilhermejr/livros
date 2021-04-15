@@ -1,3 +1,4 @@
+import React from 'react';
 import Container from '@material-ui/core/Container';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -8,6 +9,12 @@ import IconButton from '@material-ui/core/IconButton';
 import BookIcon from '@material-ui/icons/Book';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import ListarLivros from './components/livros/index'
 
@@ -71,6 +78,16 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
 
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
@@ -97,13 +114,46 @@ function App() {
             />
           </div>
 
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" onClick={handleClickOpen}>Login</Button>
 
         </Toolbar>
       </AppBar>
+
       <Container>
         <ListarLivros />
       </Container>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle id="form-dialog-title">Login</DialogTitle>
+        <DialogContent>
+          <DialogContentText align="center">
+            Informe e-mail e senha
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="email"
+            label="Email"
+            type="email"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="senha"
+            label="Senha"
+            type="password"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Fechar
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
     
   );
