@@ -10,4 +10,8 @@ export default class LivrosService {
         return await this.api.get('livros?estante='+ estante +'&page='+ pagina +'&size='+ quantidade);
     }
 
+    async get(id) {
+        return await this.api.get('livros/'+ id);
+    }
+
 }

@@ -16,11 +16,21 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         height: '35vw',
         [theme.breakpoints.up('sm')]: {
-            height: '21vw',
+            height: '20vw',
         },
+    },
+
+    mensagem: {
+      marginTop: '100px',
+      fontSize: '30px',
+      textAlign: 'center',
     },
   
   }));
+
+  const service = new LivrosService();
+
+  const { REACT_APP_API_URL } = process.env;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,27 +58,92 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
+function aba(index) {
   return {
     id: `scrollable-auto-tab-${index}`,
     'aria-controls': `scrollable-auto-tabpanel-${index}`,
   };
 }
 
+function LivroVazio(props) {
+  return(
+    <Grid container justify="center">
+      <Paper elevation={0}>
+          <div className={props.classes.mensagem}>{props.mensagem}</div>
+      </Paper>
+    </Grid> 
+  )
+}
+
+function Livro(props) {
+  return(
+    <Grid item xs={4} sm={2}>
+      <Paper elevation={0}>
+          <img className={props.classes.capaLivros} src={`${REACT_APP_API_URL}/capas/${props.livro.id}.jpg`} alt={`${props.livro.titulo}`} title={`${props.livro.titulo}`}/>
+      </Paper>
+    </Grid>     
+  )
+}
+
+function Listar(props) {
+  return(
+    <>
+      {props.livros.length === 0 && <LivroVazio mensagem="Nenhum livro encontrado nesta estante." classes={props.classes} />}
+      {props.livros.map((livro) => <Livro key={livro.id} livro={livro} classes={props.classes} />)}  
+    </>    
+  )
+}
+
 export default function ListarLivros() {
 
   const classes = useStyles();
-
+  
   const [value, setValue] = React.useState(0);
+  const [livros, setLivros] = React.useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    const service = new LivrosService();
 
-    service.getAll();
+    async function livros() {
+      try {
+        
+        const livros = await service.getAll(newValue+1);
+        if (livros.status === 200) {
+          setLivros(livros.data.content);
+        }
+
+      } catch (error) {
+        alert(error);
+      }
+    }
+
+    livros();
+
   };
 
+  React.useEffect(() => {
+
+    async function livros() {
+      try {
+        
+        const livros = await service.getAll(1);
+        if (livros.status === 200) {
+          setLivros(livros.data.content);
+        }
+
+      } catch (error) {
+        alert(error);
+      }
+    }
+
+    livros();
+    
+  }, []);
+
+  //console.log(livros);
+
   return (
+    
     <>
 
         <Tabs
@@ -78,64 +153,27 @@ export default function ListarLivros() {
           textColor="primary"
           centered
         >
-          <Tab label="Biblioteca" {...a11yProps(0)} />
-          <Tab label="Desejados" {...a11yProps(1)} />
-          <Tab label="Doação" {...a11yProps(2)} />
+          <Tab label="Biblioteca" {...aba(0)} />
+          <Tab label="Desejados" {...aba(1)} />
+          <Tab label="Doação" {...aba(2)} />
         </Tabs>
-
+      
       <TabPanel value={value} index={0}>
-            <Grid container spacing={2}>
-
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/1.jpg" alt="" />
-                    </Paper>
-                </Grid>        
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/2.jpg" alt="" />
-                    </Paper>
-                </Grid>
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/3.jpg" alt="" />
-                    </Paper>
-                </Grid>
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/4.jpg" alt="" />
-                    </Paper>
-                </Grid>
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/5.jpg" alt="" />
-                    </Paper>
-                </Grid>
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/6.jpg" alt="" />
-                    </Paper>
-                </Grid>
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/7.jpg" alt="" />
-                    </Paper>
-                </Grid>
-                <Grid item xs={4} sm={2}>
-                    <Paper elevation={0}>
-                        <img className={classes.capaLivros} src="https://api.livros.guilhermejr.net/capas/8.jpg" alt="" />
-                    </Paper>
-                </Grid>    
-
-            </Grid>
+        <Grid container spacing={2}>
+          <Listar livros={livros} classes={classes} />
+        </Grid>
       </TabPanel>
       
       <TabPanel value={value} index={1}>
-        Item Two
+        <Grid container spacing={2}>
+            <Listar livros={livros} classes={classes} />
+        </Grid>
       </TabPanel>
 
       <TabPanel value={value} index={2}>
-        Item Three
+        <Grid container spacing={2}>
+            <Listar livros={livros} classes={classes} />
+        </Grid>
       </TabPanel>
 
     </>
