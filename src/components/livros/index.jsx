@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/livros';
@@ -100,43 +101,34 @@ export default function ListarLivros() {
   
   const [value, setValue] = React.useState(0);
   const [livros, setLivros] = React.useState([]);
+  const [carregou, setCarregou] = React.useState(false);
+
+   const listaDeLivros = async (estante) => {
+    try {
+      
+      const livros = await service.getAll(estante);
+      if (livros.status === 200) {
+        setLivros(livros.data.content);
+        console.log(livros);
+        setCarregou(true);
+      }
+  
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const handleChange = (event, newValue) => {
+
+    setCarregou(false);
     setValue(newValue);
-
-    async function livros() {
-      try {
-        
-        const livros = await service.getAll(newValue+1);
-        if (livros.status === 200) {
-          setLivros(livros.data.content);
-        }
-
-      } catch (error) {
-        alert(error);
-      }
-    }
-
-    livros();
+    listaDeLivros(newValue+1);
 
   };
 
   React.useEffect(() => {
 
-    async function livros() {
-      try {
-        
-        const livros = await service.getAll(1);
-        if (livros.status === 200) {
-          setLivros(livros.data.content);
-        }
-
-      } catch (error) {
-        alert(error);
-      }
-    }
-
-    livros();
+    listaDeLivros(1);
     
   }, []);
 
@@ -153,27 +145,45 @@ export default function ListarLivros() {
           textColor="primary"
           centered
         >
-          <Tab label="Biblioteca" {...aba(0)} />
-          <Tab label="Desejados" {...aba(1)} />
-          <Tab label="Doação" {...aba(2)} />
+          <Tab label="Biblioteca" />
+          <Tab label="Desejados" />
+          <Tab label="Doação" />
         </Tabs>
       
       <TabPanel value={value} index={0}>
-        <Grid container spacing={2}>
-          <Listar livros={livros} classes={classes} />
-        </Grid>
+        {
+          !carregou
+          ?
+            <LinearProgress />
+          :
+            <Grid container spacing={2}>
+              <Listar livros={livros} classes={classes} />
+            </Grid>
+        }
       </TabPanel>
-      
+
       <TabPanel value={value} index={1}>
-        <Grid container spacing={2}>
-            <Listar livros={livros} classes={classes} />
-        </Grid>
+        {
+          !carregou
+          ?
+            <LinearProgress />
+          :
+            <Grid container spacing={2}>
+              <Listar livros={livros} classes={classes} />
+            </Grid>
+        }
       </TabPanel>
 
       <TabPanel value={value} index={2}>
-        <Grid container spacing={2}>
-            <Listar livros={livros} classes={classes} />
-        </Grid>
+        {
+          !carregou
+          ?
+            <LinearProgress />
+          :
+            <Grid container spacing={2}>
+              <Listar livros={livros} classes={classes} />
+            </Grid>
+        }
       </TabPanel>
 
     </>
