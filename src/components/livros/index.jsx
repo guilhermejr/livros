@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -7,31 +7,32 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import 'fontsource-roboto';
 
 import { makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/livros';
 
 const useStyles = makeStyles((theme) => ({
 
-    capaLivros: {
-        width: '100%',
-        height: '35vw',
-        [theme.breakpoints.up('sm')]: {
-            height: '20vw',
-        },
-    },
+  capaLivros: {
+      width: '100%',
+      height: '35vw',
+      [theme.breakpoints.up('sm')]: {
+          height: '20vw',
+      },
+  },
 
-    mensagem: {
-      marginTop: '100px',
-      fontSize: '30px',
-      textAlign: 'center',
-    },
-  
-  }));
+  mensagem: {
+    marginTop: '100px',
+    fontSize: '30px',
+    textAlign: 'center',
+  },
 
-  const service = new LivrosService();
+}));
 
-  const { REACT_APP_API_URL } = process.env;
+const service = new LivrosService();
+
+const { REACT_APP_API_URL } = process.env;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,38 +60,31 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function aba(index) {
-  return {
-    id: `scrollable-auto-tab-${index}`,
-    'aria-controls': `scrollable-auto-tabpanel-${index}`,
-  };
-}
-
-function LivroVazio(props) {
+function LivroVazio({mensagem, classes}) {
   return(
     <Grid container justify="center">
       <Paper elevation={0}>
-          <div className={props.classes.mensagem}>{props.mensagem}</div>
+          <div className={classes.mensagem}>{mensagem}</div>
       </Paper>
     </Grid> 
   )
 }
 
-function Livro(props) {
+function Livro({livro, classes}) {
   return(
     <Grid item xs={4} sm={2}>
       <Paper elevation={0}>
-          <img className={props.classes.capaLivros} src={`${REACT_APP_API_URL}/capas/${props.livro.id}.jpg`} alt={`${props.livro.titulo}`} title={`${props.livro.titulo}`}/>
+          <img className={classes.capaLivros} src={`${REACT_APP_API_URL}/capas/${livro.id}.jpg`} alt={`${livro.titulo}`} title={`${livro.titulo}`}/>
       </Paper>
     </Grid>     
   )
 }
 
-function Listar(props) {
+function Listar({livros, classes}) {
   return(
     <>
-      {props.livros.length === 0 && <LivroVazio mensagem="Nenhum livro encontrado nesta estante." classes={props.classes} />}
-      {props.livros.map((livro) => <Livro key={livro.id} livro={livro} classes={props.classes} />)}  
+      {livros.length === 0 && <LivroVazio mensagem="Nenhum livro encontrado nesta estante." classes={classes} />}
+      {livros.map((livro) => <Livro key={livro.id} livro={livro} classes={classes} />)}  
     </>    
   )
 }
@@ -99,9 +93,9 @@ export default function ListarLivros() {
 
   const classes = useStyles();
   
-  const [value, setValue] = React.useState(0);
-  const [livros, setLivros] = React.useState([]);
-  const [carregou, setCarregou] = React.useState(false);
+  const [value, setValue] = useState(0);
+  const [livros, setLivros] = useState([]);
+  const [carregou, setCarregou] = useState(false);
 
    const listaDeLivros = async (estante) => {
     try {
@@ -126,7 +120,7 @@ export default function ListarLivros() {
 
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
 
     listaDeLivros(1);
     

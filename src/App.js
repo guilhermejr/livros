@@ -88,6 +88,8 @@ function App() {
     setOpen(false);
   };
 
+  console.log(111);
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
