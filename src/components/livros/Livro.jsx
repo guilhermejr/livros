@@ -8,10 +8,16 @@ export default function Livro({livro, classes}) {
     const { REACT_APP_API_URL } = process.env;
     const modal = useContext(Modal);
 
+    function abrirLivro(id) {
+        console.log(id);
+        modal.setOpen(true);
+        modal.setLivroId(id);
+    }
+
     return(
       <Grid item xs={4} sm={2}>
         <Paper elevation={0}>
-            <img onClick={() => {modal(true)}} className={classes.capaLivros} src={`${REACT_APP_API_URL}/capas/${livro.id}.jpg`} alt={`${livro.titulo}`} title={`${livro.titulo}`}/>
+            <img onClick={() => {abrirLivro(livro.id)}} className={classes.capaLivros} src={`${REACT_APP_API_URL}/capas/${livro.id}.jpg`} alt={`${livro.titulo}`} title={`${livro.titulo}`}/>
         </Paper>
       </Grid>     
     )

@@ -6,14 +6,11 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Button from '@material-ui/core/Button';
 import 'fontsource-roboto';
 import { makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/LivrosService';
-import { DialogContentText, Dialog, DialogContent, DialogActions, DialogTitle } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 import Listar from './Listar';
+import ModalLivro from './ModalLivro';
 import Modal from '../../contexts/Modal';
 
 const useStyles = makeStyles((theme) => ({
@@ -71,8 +68,7 @@ export default function ListarLivros() {
   const [livros, setLivros] = useState([]);
   const [carregou, setCarregou] = useState(false);
   const [open, setOpen] = useState(false);
-
-  
+  const [livroId, setLivroId] = useState(0);
 
   const listaDeLivros = async (estante) => {
     try {
@@ -105,34 +101,10 @@ export default function ListarLivros() {
 
   //console.log(livros);
 
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     
-    <>
-        <Dialog
-          fullScreen={fullScreen}
-          open={open}
-          onClose={handleClose}
-        >
-          <DialogTitle id="responsive-dialog-title">{"Use Google's location service?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Let Google help apps determine location. This means sending anonymous location data to
-              Google, even when no apps are running.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Fechar
-            </Button>
-          </DialogActions>
-        </Dialog>
+    <Modal.Provider value={{open: open, setOpen: setOpen, livroId: livroId, setLivroId: setLivroId}}>
+        <ModalLivro />
         <Tabs
           value={value}
           onChange={handleChange}
@@ -152,9 +124,7 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-              <Modal.Provider value={setOpen}>
                 <Listar livros={livros} classes={classes} />
-              </Modal.Provider>
             </Grid>
         }
       </TabPanel>
@@ -166,9 +136,7 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-              <Modal.Provider value={setOpen}>
                 <Listar livros={livros} classes={classes} />
-              </Modal.Provider>
             </Grid>
         }
       </TabPanel>
@@ -180,13 +148,11 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-              <Modal.Provider value={setOpen}>
                 <Listar livros={livros} classes={classes} />
-              </Modal.Provider>
             </Grid>
         }
       </TabPanel>
 
-    </>
+    </Modal.Provider>
   );
 }
