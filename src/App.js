@@ -16,8 +16,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import ListarLivros from './components/livros/index'
-import PaginaNaoEncontrada from './components/paginaNaoEncontrada/index';
+import ListarLivros from './components/Livros/index'
+import PaginaNaoEncontrada from './components/PaginaNaoEncontrada/index';
 
 const useStyles = makeStyles((theme) => ({
 

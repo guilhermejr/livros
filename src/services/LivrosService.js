@@ -1,4 +1,4 @@
-import baseAPI from './api';
+import baseAPI from './API';
 
 export default class LivrosService {
 

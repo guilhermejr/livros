@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import 'fontsource-roboto';
 
 import { makeStyles } from '@material-ui/core/styles';
-import LivrosService from '../../services/livros';
+import LivrosService from '../../services/LivrosService';
 
 const useStyles = makeStyles((theme) => ({
 
