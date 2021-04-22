@@ -68,7 +68,7 @@ export default function ListarLivros() {
   const [livros, setLivros] = useState([]);
   const [carregou, setCarregou] = useState(false);
   const [open, setOpen] = useState(false);
-  const [livroId, setLivroId] = useState(0);
+  const [livro, setLivro] = useState({id: 0, titulo: ''});
 
   const listaDeLivros = async (estante) => {
     try {
@@ -103,7 +103,7 @@ export default function ListarLivros() {
 
   return (
     
-    <Modal.Provider value={{open: open, setOpen: setOpen, livroId: livroId, setLivroId: setLivroId}}>
+    <Modal.Provider value={{open: open, setOpen: setOpen, livro: livro, setLivro: setLivro}}>
         <ModalLivro />
         <Tabs
           value={value}
