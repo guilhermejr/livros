@@ -15,8 +15,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ListarLivros from './components/livros/index'
+import PaginaNaoEncontrada from './components/paginaNaoEncontrada/index';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -122,7 +123,17 @@ function App() {
       </AppBar>
 
       <Container>
-        <ListarLivros />
+        <Router>
+          <Switch>
+            <Route exact path='/'>
+              <ListarLivros />
+            </Route>
+            <Route>
+              <PaginaNaoEncontrada />
+            </Route>
+          </Switch>
+        </Router>
+        
       </Container>
 
       <Dialog open={open} onClose={handleClose}>
