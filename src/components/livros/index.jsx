@@ -5,18 +5,23 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from '@material-ui/core/Button';
 import 'fontsource-roboto';
-
 import { makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/LivrosService';
+import { DialogContentText, Dialog, DialogContent, DialogActions, DialogTitle } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
+import Listar from './Listar';
+import Modal from '../../contexts/Modal';
 
 const useStyles = makeStyles((theme) => ({
 
   capaLivros: {
       width: '100%',
       height: '35vw',
+      cursor: 'pointer',
       [theme.breakpoints.up('sm')]: {
           height: '20vw',
       },
@@ -31,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const service = new LivrosService();
-
-const { REACT_APP_API_URL } = process.env;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,35 +63,6 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function LivroVazio({mensagem, classes}) {
-  return(
-    <Grid container justify="center">
-      <Paper elevation={0}>
-          <div className={classes.mensagem}>{mensagem}</div>
-      </Paper>
-    </Grid> 
-  )
-}
-
-function Livro({livro, classes}) {
-  return(
-    <Grid item xs={4} sm={2}>
-      <Paper elevation={0}>
-          <img className={classes.capaLivros} src={`${REACT_APP_API_URL}/capas/${livro.id}.jpg`} alt={`${livro.titulo}`} title={`${livro.titulo}`}/>
-      </Paper>
-    </Grid>     
-  )
-}
-
-function Listar({livros, classes}) {
-  return(
-    <>
-      {livros.length === 0 && <LivroVazio mensagem="Nenhum livro encontrado nesta estante." classes={classes} />}
-      {livros.map((livro) => <Livro key={livro.id} livro={livro} classes={classes} />)}  
-    </>    
-  )
-}
-
 export default function ListarLivros() {
 
   const classes = useStyles();
@@ -96,8 +70,11 @@ export default function ListarLivros() {
   const [value, setValue] = useState(0);
   const [livros, setLivros] = useState([]);
   const [carregou, setCarregou] = useState(false);
+  const [open, setOpen] = useState(false);
 
-   const listaDeLivros = async (estante) => {
+  
+
+  const listaDeLivros = async (estante) => {
     try {
       
       const livros = await service.getAll(estante);
@@ -128,10 +105,34 @@ export default function ListarLivros() {
 
   //console.log(livros);
 
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     
     <>
-
+        <Dialog
+          fullScreen={fullScreen}
+          open={open}
+          onClose={handleClose}
+        >
+          <DialogTitle id="responsive-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Let Google help apps determine location. This means sending anonymous location data to
+              Google, even when no apps are running.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Fechar
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -151,7 +152,9 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-              <Listar livros={livros} classes={classes} />
+              <Modal.Provider value={setOpen}>
+                <Listar livros={livros} classes={classes} />
+              </Modal.Provider>
             </Grid>
         }
       </TabPanel>
@@ -163,7 +166,9 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-              <Listar livros={livros} classes={classes} />
+              <Modal.Provider value={setOpen}>
+                <Listar livros={livros} classes={classes} />
+              </Modal.Provider>
             </Grid>
         }
       </TabPanel>
@@ -175,7 +180,9 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-              <Listar livros={livros} classes={classes} />
+              <Modal.Provider value={setOpen}>
+                <Listar livros={livros} classes={classes} />
+              </Modal.Provider>
             </Grid>
         }
       </TabPanel>
