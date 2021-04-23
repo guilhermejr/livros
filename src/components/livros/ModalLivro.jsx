@@ -3,7 +3,7 @@ import { DialogContentText, Dialog, DialogContent, DialogActions, DialogTitle, B
 import ReactHtmlParser from 'react-html-parser';
 import {  makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/LivrosService';
-import Modal from '../../contexts/Modal';
+import Modal from '../../contexts/ModalLivroContext';
 
 const useStyles = makeStyles((theme) => ({
 

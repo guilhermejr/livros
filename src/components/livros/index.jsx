@@ -7,30 +7,10 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import 'fontsource-roboto';
-import { makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/LivrosService';
 import Listar from './Listar';
 import ModalLivro from './ModalLivro';
-import Modal from '../../contexts/Modal';
-
-const useStyles = makeStyles((theme) => ({
-
-  capaLivros: {
-      width: '100%',
-      height: '35vw',
-      cursor: 'pointer',
-      [theme.breakpoints.up('sm')]: {
-          height: '20vw',
-      },
-  },
-
-  mensagem: {
-    marginTop: '100px',
-    fontSize: '30px',
-    textAlign: 'center',
-  },
-
-}));
+import ModalLivroContext from '../../contexts/ModalLivroContext';
 
 const service = new LivrosService();
 
@@ -61,8 +41,6 @@ TabPanel.propTypes = {
 };
 
 export default function ListarLivros() {
-
-  const classes = useStyles();
   
   const [value, setValue] = useState(0);
   const [livros, setLivros] = useState([]);
@@ -103,7 +81,7 @@ export default function ListarLivros() {
 
   return (
     
-    <Modal.Provider value={{open: open, setOpen: setOpen, livro: livro, setLivro: setLivro}}>
+    <ModalLivroContext.Provider value={{open: open, setOpen: setOpen, livro: livro, setLivro: setLivro}}>
         <ModalLivro />
         <Tabs
           value={value}
@@ -124,7 +102,7 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-                <Listar livros={livros} classes={classes} />
+                <Listar livros={livros} />
             </Grid>
         }
       </TabPanel>
@@ -136,7 +114,7 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-                <Listar livros={livros} classes={classes} />
+                <Listar livros={livros} />
             </Grid>
         }
       </TabPanel>
@@ -148,11 +126,11 @@ export default function ListarLivros() {
             <LinearProgress />
           :
             <Grid container spacing={2}>
-                <Listar livros={livros} classes={classes} />
+                <Listar livros={livros} />
             </Grid>
         }
       </TabPanel>
 
-    </Modal.Provider>
+    </ModalLivroContext.Provider>
   );
 }

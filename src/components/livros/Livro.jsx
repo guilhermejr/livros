@@ -1,9 +1,25 @@
 import React, { useContext } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Modal from '../../contexts/Modal';
+import Modal from '../../contexts/ModalLivroContext';
+import { makeStyles } from '@material-ui/core/styles';
 
-export default function Livro({livro, classes}) {
+const useStyles = makeStyles((theme) => ({
+
+  capaLivros: {
+      width: '100%',
+      height: '35vw',
+      cursor: 'pointer',
+      [theme.breakpoints.up('sm')]: {
+          height: '20vw',
+      },
+  },
+
+}));
+
+export default function Livro({livro}) {
+
+    const classes = useStyles();
     
     const { REACT_APP_API_URL } = process.env;
     const modal = useContext(Modal);
