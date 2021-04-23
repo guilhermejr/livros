@@ -32,8 +32,8 @@ export default function ModalLivro() {
     const [carregou, setCarregou] = useState(false);
 
     const handleClose = () => {
-        setCarregou(false);
         modal.setOpen(false);
+        setCarregou(false);
     };
 
     const service = new LivrosService();
@@ -55,6 +55,7 @@ export default function ModalLivro() {
     useEffect(() => {
         if (modal.livro.id !== 0) {
             carregarLivro(modal.livro.id);
+            modal.setLivro({id: 0, titulo: modal.livro.titulo});
         }
     }, [modal.livro.id]);
 
