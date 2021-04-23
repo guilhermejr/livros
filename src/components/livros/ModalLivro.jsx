@@ -3,7 +3,7 @@ import { DialogContentText, Dialog, DialogContent, DialogActions, DialogTitle, B
 import ReactHtmlParser from 'react-html-parser';
 import {  makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/LivrosService';
-import Modal from '../../contexts/ModalLivroContext';
+import ModalLivroContext from '../../contexts/ModalLivroContext';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ModalLivro() {
 
-    const modal = useContext(Modal);
+    const modal = useContext(ModalLivroContext);
     const [livro, setLivro] = useState({});
     const { REACT_APP_API_URL } = process.env;
     const classes = useStyles();
@@ -84,6 +84,7 @@ export default function ModalLivro() {
                                         {livro.autores && livro.autores.map((autor) => <li>{autor.descricao}</li>)}
                                     </ul>
                                     <hr />
+                                    <br />
                                     ISBN: {livro.isbn}<br/>
                                     Editora: {livro.editora && livro.editora.descricao}<br/>
                                     Idioma: {livro.idioma && livro.idioma.descricao}<br/>
@@ -95,7 +96,7 @@ export default function ModalLivro() {
                             </Grid>
                             <Grid item sm={9} xs={12}>
                                 <Paper elevation={0}>
-                                    <p align="justify">{ReactHtmlParser(livro.descricao)}</p>
+                                    <div align="justify">{ReactHtmlParser(livro.descricao)}</div>
                                     <ul>
                                         {livro.generos && livro.generos.map((genero) => <li>{genero.descricao}</li>)}
                                     </ul>

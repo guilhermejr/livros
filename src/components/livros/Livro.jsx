@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Modal from '../../contexts/ModalLivroContext';
+import ModalLivroContext from '../../contexts/ModalLivroContext';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +22,7 @@ export default function Livro({livro}) {
     const classes = useStyles();
     
     const { REACT_APP_API_URL } = process.env;
-    const modal = useContext(Modal);
+    const modal = useContext(ModalLivroContext);
 
     function abrirLivro(id, titulo) {
         console.log(id);
