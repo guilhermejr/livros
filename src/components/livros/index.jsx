@@ -11,6 +11,8 @@ import LivrosService from '../../services/LivrosService';
 import Listar from './Listar';
 import ModalLivro from './ModalLivro';
 import ModalLivroContext from '../../contexts/ModalLivroContext';
+import TablePagination from '@material-ui/core/TablePagination';
+import Hidden from '@material-ui/core/Hidden';
 
 const service = new LivrosService();
 
@@ -47,13 +49,15 @@ export default function ListarLivros() {
   const [carregou, setCarregou] = useState(false);
   const [open, setOpen] = useState(false);
   const [livro, setLivro] = useState({id: 0, titulo: ''});
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(12);
 
-  const listaDeLivros = async (estante) => {
+  const listaDeLivros = async (estante, pagina, quantidade) => {
     try {
       
-      const livros = await service.getAll(estante);
+      const livros = await service.getAll(estante, pagina, quantidade);
       if (livros.status === 200) {
-        setLivros(livros.data.content);
+        setLivros(livros.data);
         console.log(livros);
         setCarregou(true);
       }
@@ -64,20 +68,34 @@ export default function ListarLivros() {
   };
 
   const handleChange = (event, newValue) => {
-
     setCarregou(false);
     setValue(newValue);
-    listaDeLivros(newValue+1);
+    setPage(0);
+    listaDeLivros(newValue+1, 0, rowsPerPage);
 
   };
 
   useEffect(() => {
-
-    listaDeLivros(1);
+    console.log("hook");
+    listaDeLivros(1, page, rowsPerPage);
     
   }, []);
 
   //console.log(livros);
+
+  const handleChangePage = (event, newPage) => {
+    setCarregou(false);
+    setPage(newPage);
+    listaDeLivros(1, newPage, rowsPerPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setCarregou(false);
+    const qtdPorPagina = parseInt(event.target.value, 10);
+    setRowsPerPage(qtdPorPagina);
+    setPage(0);
+    listaDeLivros(1, 0, qtdPorPagina);
+  };
 
   return (
     
@@ -130,7 +148,34 @@ export default function ListarLivros() {
             </Grid>
         }
       </TabPanel>
-
+      <Hidden smUp>
+        <TablePagination
+          style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
+          //labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : mais que ${to}}`}
+          labelRowsPerPage="Livros por página:"
+          rowsPerPageOptions = {[]}
+          component="div"
+          count={livros.totalElements}
+          page={page}
+          onChangePage={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <TablePagination
+          style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
+          //labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : mais que ${to}}`}
+          labelRowsPerPage="Livros por página:"
+          rowsPerPageOptions = {[ 12, 24, 48, 96 ]}
+          component="div"
+          count={livros.totalElements}
+          page={page}
+          onChangePage={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Hidden>
     </ModalLivroContext.Provider>
   );
 }

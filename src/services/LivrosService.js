@@ -6,7 +6,7 @@ export default class LivrosService {
         this.api = baseAPI();
     }
 
-    async getAll(estante = 1, pagina = 0, quantidade = 24) {
+    async getAll(estante = 1, pagina = 0, quantidade = 12) {
         return await this.api.get('livros?estante='+ estante +'&page='+ pagina +'&size='+ quantidade);
     }
 
