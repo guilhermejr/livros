@@ -14,6 +14,7 @@ import ModalLivroContext from '../../contexts/ModalLivroContext';
 import TablePagination from '@material-ui/core/TablePagination';
 import Hidden from '@material-ui/core/Hidden';
 import { makeStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -22,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(0),
     right: theme.spacing(2),
     backgroundColor: '#fff',
+  },
+
+  naoMostrar: {
+    display: 'none',
   },
 
 }));
@@ -54,7 +59,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default function ListarLivros({ pesquisa }) {
+export default function ListarLivros({ pesquisa, setPesquisa }) {
   
   const [value, setValue] = useState(0);
   const [livros, setLivros] = useState([]);
@@ -67,10 +72,10 @@ export default function ListarLivros({ pesquisa }) {
 
   const classes = useStyles();
 
-  const pesquisarLivros = async (texto) => {
+  const pesquisarLivros = async (estante, texto) => {
     try {
       
-      const livros = await service.pesquisar(texto);
+      const livros = await service.pesquisar(estante, texto);
       if (livros.status === 200) {
         setLivros(livros.data);
         console.log(livros);
@@ -98,11 +103,14 @@ export default function ListarLivros({ pesquisa }) {
   };
 
   const handleChange = (event, newValue) => {
-    setCarregou(false);
-    setValue(newValue);
-    setPage(0);
-    setEstante(newValue+1);
-    listaDeLivros(newValue+1, 0, rowsPerPage);
+    
+      setCarregou(false);
+      setValue(newValue);
+      setPage(0);
+      setEstante(newValue+1);
+    if (pesquisa === '') {
+      listaDeLivros(newValue+1, 0, rowsPerPage);
+    }
 
   };
 
@@ -117,10 +125,10 @@ export default function ListarLivros({ pesquisa }) {
     if (pesquisa !== '') {
       console.log('pesquisa');
       setCarregou(false);
-      pesquisarLivros(pesquisa);
+      pesquisarLivros(estante, pesquisa);
     }
 
-  }, [pesquisa]);
+  }, [estante, pesquisa]);
 
   //console.log(livros);
 
@@ -138,10 +146,18 @@ export default function ListarLivros({ pesquisa }) {
     listaDeLivros(estante, 0, qtdPorPagina);
   };
 
+  const limpar = () => {
+    console.log("limpou");
+    setCarregou(false);
+    setPesquisa('');
+    listaDeLivros(estante, 0, rowsPerPage);
+  }
+
   return (
     
     <ModalLivroContext.Provider value={{open: open, setOpen: setOpen, livro: livro, setLivro: setLivro}}>
         <ModalLivro />
+        <Chip className={pesquisa === '' && classes.naoMostrar} label={pesquisa} onDelete={limpar} color="primary" />
         <Tabs
           value={value}
           onChange={handleChange}
@@ -154,7 +170,7 @@ export default function ListarLivros({ pesquisa }) {
           <Tab label="Doação" />
         </Tabs>
       
-      <TabPanel value={value} index={0}>
+      <TabPanel>
         {
           !carregou
           ?
@@ -166,29 +182,6 @@ export default function ListarLivros({ pesquisa }) {
         }
       </TabPanel>
 
-      <TabPanel value={value} index={1}>
-        {
-          !carregou
-          ?
-            <LinearProgress />
-          :
-            <Grid container spacing={2}>
-                <Listar livros={livros} />
-            </Grid>
-        }
-      </TabPanel>
-
-      <TabPanel value={value} index={2}>
-        {
-          !carregou
-          ?
-            <LinearProgress />
-          :
-            <Grid container spacing={2}>
-                <Listar livros={livros} />
-            </Grid>
-        }
-      </TabPanel>
       <Hidden smUp>
         <TablePagination className={classes.paginacaoRodapeFixo}
           style={{ justifyContent:"right", textAlign:"right", width: "100%", }}

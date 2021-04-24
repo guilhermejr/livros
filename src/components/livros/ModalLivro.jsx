@@ -80,6 +80,7 @@ export default function ModalLivro() {
                                     <div className={classes.capa}>
                                         <img src={`${REACT_APP_API_URL}/capas/${livro.id}.jpg`} alt={`${livro.titulo}`} title={`${livro.titulo}`} /><br/>
                                     </div>
+                                    {livro.subtitulo && ReactHtmlParser(`${livro.subtitulo} <br/>`)}
                                     <ul>
                                         {livro.autores && livro.autores.map((autor) => <li>{autor.descricao}</li>)}
                                     </ul>

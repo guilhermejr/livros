@@ -22,7 +22,7 @@ import PaginaNaoEncontrada from './components/PaginaNaoEncontrada/index';
 const useStyles = makeStyles((theme) => ({
 
   root: {
-    paddingTop: 55,
+    paddingTop: 70,
     paddingBottom:50,
     [theme.breakpoints.up('sm')]: {
       paddingTop: 70,
@@ -94,8 +94,8 @@ function App() {
 
   const buscar = (e) => {
     e.preventDefault();
-    console.log("Enter.");
     setPesquisa(textoPesquisar);
+    setTextoPesquisar('');
   }
 
   return (
@@ -116,6 +116,7 @@ function App() {
                 </div>
                 <InputBase
                   onChange={(e) => {setTextoPesquisar(e.target.value)}}
+                  value={textoPesquisar}
                   fullWidth={true}
                   placeholder="Busque por título, autor, editora, ISBN..."
                   classes={{
@@ -136,7 +137,7 @@ function App() {
         <Router>
           <Switch>
             <Route exact path='/'>
-              <ListarLivros pesquisa={pesquisa} />
+              <ListarLivros pesquisa={pesquisa} setPesquisa={setPesquisa} setTextoPesquisar={setTextoPesquisar} />
             </Route>
             <Route>
               <PaginaNaoEncontrada />
