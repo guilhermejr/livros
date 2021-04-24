@@ -165,7 +165,7 @@ export default function ListarLivros() {
       <Hidden smUp>
         <TablePagination className={classes.paginacaoRodapeFixo}
           style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
-          //labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : mais que ${to}}`}
+          labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count}`}
           labelRowsPerPage="Livros por página:"
           rowsPerPageOptions = {[]}
           component="div"
@@ -179,7 +179,7 @@ export default function ListarLivros() {
       <Hidden smDown>
         <TablePagination className={classes.paginacaoRodapeFixo}
           style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
-          //labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : mais que ${to}}`}
+          labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count}`}
           labelRowsPerPage="Livros por página:"
           rowsPerPageOptions = {[ 24, 48, 72, 96 ]}
           component="div"
