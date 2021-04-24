@@ -13,6 +13,18 @@ import ModalLivro from './ModalLivro';
 import ModalLivroContext from '../../contexts/ModalLivroContext';
 import TablePagination from '@material-ui/core/TablePagination';
 import Hidden from '@material-ui/core/Hidden';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  
+  paginacaoRodapeFixo: {
+    position: 'fixed',
+    bottom: theme.spacing(0),
+    right: theme.spacing(2),
+    backgroundColor: '#fff',
+  },
+
+}));
 
 const service = new LivrosService();
 
@@ -50,7 +62,9 @@ export default function ListarLivros() {
   const [open, setOpen] = useState(false);
   const [livro, setLivro] = useState({id: 0, titulo: ''});
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(12);
+  const [rowsPerPage, setRowsPerPage] = React.useState(24);
+
+  const classes = useStyles();
 
   const listaDeLivros = async (estante, pagina, quantidade) => {
     try {
@@ -149,7 +163,7 @@ export default function ListarLivros() {
         }
       </TabPanel>
       <Hidden smUp>
-        <TablePagination
+        <TablePagination className={classes.paginacaoRodapeFixo}
           style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
           //labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : mais que ${to}}`}
           labelRowsPerPage="Livros por página:"
@@ -163,11 +177,11 @@ export default function ListarLivros() {
         />
       </Hidden>
       <Hidden smDown>
-        <TablePagination
+        <TablePagination className={classes.paginacaoRodapeFixo}
           style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
           //labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : mais que ${to}}`}
           labelRowsPerPage="Livros por página:"
-          rowsPerPageOptions = {[ 12, 24, 48, 96 ]}
+          rowsPerPageOptions = {[ 24, 48, 72, 96 ]}
           component="div"
           count={livros.totalElements}
           page={page}

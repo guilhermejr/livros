@@ -23,8 +23,10 @@ const useStyles = makeStyles((theme) => ({
 
   root: {
     paddingTop: 55,
+    paddingBottom:50,
     [theme.breakpoints.up('sm')]: {
       paddingTop: 70,
+      paddingBottom:50,
     },
   },
 
