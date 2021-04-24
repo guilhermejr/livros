@@ -70,7 +70,6 @@ const useStyles = makeStyles((theme) => ({
 
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -82,6 +81,8 @@ function App() {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
+  const [textoPesquisar, setTextoPesquisar] = useState('');
+  const [pesquisa, setPesquisa] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -90,6 +91,12 @@ function App() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const buscar = (e) => {
+    e.preventDefault();
+    console.log("Enter.");
+    setPesquisa(textoPesquisar);
+  }
 
   return (
     <div className={classes.root}>
@@ -102,20 +109,23 @@ function App() {
             Livros
           </Typography>
 
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+            <div className={classes.search}>
+              <form className={classes.form} onSubmit={buscar}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  onChange={(e) => {setTextoPesquisar(e.target.value)}}
+                  fullWidth={true}
+                  placeholder="Busque por título, autor, editora, ISBN..."
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
+                />
+              </form>
             </div>
-            <InputBase
-              fullWidth={true}
-              placeholder="Busque por título, autor, editora, ISBN..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
 
           <Button color="inherit" onClick={handleClickOpen}>Login</Button>
 
@@ -126,7 +136,7 @@ function App() {
         <Router>
           <Switch>
             <Route exact path='/'>
-              <ListarLivros />
+              <ListarLivros pesquisa={pesquisa} />
             </Route>
             <Route>
               <PaginaNaoEncontrada />

@@ -54,17 +54,33 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default function ListarLivros() {
+export default function ListarLivros({ pesquisa }) {
   
   const [value, setValue] = useState(0);
   const [livros, setLivros] = useState([]);
   const [carregou, setCarregou] = useState(false);
   const [open, setOpen] = useState(false);
   const [livro, setLivro] = useState({id: 0, titulo: ''});
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(24);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(24);
+  const [estante, setEstante] = useState(1);
 
   const classes = useStyles();
+
+  const pesquisarLivros = async (texto) => {
+    try {
+      
+      const livros = await service.pesquisar(texto);
+      if (livros.status === 200) {
+        setLivros(livros.data);
+        console.log(livros);
+        setCarregou(true);
+      }
+  
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const listaDeLivros = async (estante, pagina, quantidade) => {
     try {
@@ -85,22 +101,33 @@ export default function ListarLivros() {
     setCarregou(false);
     setValue(newValue);
     setPage(0);
+    setEstante(newValue+1);
     listaDeLivros(newValue+1, 0, rowsPerPage);
 
   };
 
   useEffect(() => {
-    console.log("hook");
-    listaDeLivros(1, page, rowsPerPage);
+    console.log("carga inicial");
+    listaDeLivros(estante, page, rowsPerPage);
     
   }, []);
+
+  useEffect(() => {
+
+    if (pesquisa !== '') {
+      console.log('pesquisa');
+      setCarregou(false);
+      pesquisarLivros(pesquisa);
+    }
+
+  }, [pesquisa]);
 
   //console.log(livros);
 
   const handleChangePage = (event, newPage) => {
     setCarregou(false);
     setPage(newPage);
-    listaDeLivros(1, newPage, rowsPerPage);
+    listaDeLivros(estante, newPage, rowsPerPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -108,7 +135,7 @@ export default function ListarLivros() {
     const qtdPorPagina = parseInt(event.target.value, 10);
     setRowsPerPage(qtdPorPagina);
     setPage(0);
-    listaDeLivros(1, 0, qtdPorPagina);
+    listaDeLivros(estante, 0, qtdPorPagina);
   };
 
   return (

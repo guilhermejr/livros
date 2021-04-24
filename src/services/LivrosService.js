@@ -14,4 +14,8 @@ export default class LivrosService {
         return await this.api.get('livros/'+ id);
     }
 
+    async pesquisar(texto) {
+        return await this.api.get('livros/pesquisar/'+ texto);
+    }
+
 }
