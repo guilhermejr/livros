@@ -98,12 +98,16 @@ function App() {
     setTextoPesquisar('');
   }
 
+  const inicio = () => {
+    window.location.href='/';
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
           <IconButton edge="start" color="inherit">
-            <BookIcon />
+            <BookIcon onClick={inicio} />
           </IconButton>
           <Typography variant="h6" className={classes.title} noWrap>
             Livros
