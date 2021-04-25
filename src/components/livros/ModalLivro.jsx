@@ -55,7 +55,7 @@ export default function ModalLivro() {
     useEffect(() => {
         if (modal.livro.id !== 0) {
             carregarLivro(modal.livro.id);
-            modal.setLivro({id: 0, titulo: modal.livro.titulo});
+            modal.setLivro({id: 0, titulo: modal.livro.titulo, extensao: modal.livro.extensao});
         }
     }, [modal.livro.id]);
 
@@ -78,7 +78,7 @@ export default function ModalLivro() {
                             <Grid item sm={3} xs={12}>
                                 <Paper elevation={0}>
                                     <div className={classes.capa}>
-                                        <img src={`${REACT_APP_API_URL}/capas/${livro.id}.jpg`} alt={`${livro.titulo}`} title={`${livro.titulo}`} /><br/>
+                                        <img src={`${REACT_APP_API_URL}/capas/${livro.id}.${livro.extensao}`} alt={`${livro.titulo}`} title={`${livro.titulo}`} /><br/>
                                     </div>
                                     {livro.subtitulo && ReactHtmlParser(`${livro.subtitulo} <br/>`)}
                                     <ul>

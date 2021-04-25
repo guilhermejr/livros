@@ -65,7 +65,7 @@ export default function ListarLivros({ pesquisa, setPesquisa }) {
   const [livros, setLivros] = useState([]);
   const [carregou, setCarregou] = useState(false);
   const [open, setOpen] = useState(false);
-  const [livro, setLivro] = useState({id: 0, titulo: ''});
+  const [livro, setLivro] = useState({id: 0, titulo: '', extensao: ''});
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(24);
   const [estante, setEstante] = useState(1);
