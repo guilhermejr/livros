@@ -18,6 +18,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ListarLivros from './components/Livros/index'
 import PaginaNaoEncontrada from './components/PaginaNaoEncontrada/index';
+import UsuariosService from './services/UsuariosService';
+import { login, logout } from './services/auth';
+
+const usuarioService = new UsuariosService();
 
 const useStyles = makeStyles((theme) => ({
 
@@ -77,18 +81,47 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function App() {
-  const classes = useStyles();
+function App({ history }) {
 
+  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [textoPesquisar, setTextoPesquisar] = useState('');
   const [pesquisa, setPesquisa] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erroLogin, setErroLogin] = useState('');
+
+  const handleLogin = async () => {
+
+    if (!email || !senha) {
+
+      console.log('Campos em branco');
+      setErroLogin('Inválida combinação de E-mail e Senha.');
+
+    } else {
+
+      try {
+
+        const response = await usuarioService.login(email, senha);
+        console.log('LOGOU');
+        console.log(response.data.access_token);
+        login(response.data.access_token);
+        handleClose();
+
+      } catch (error) {
+        setErroLogin('Inválida combinação de E-mail e Senha.');
+      }
+    }
+
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    setEmail('');
+    setSenha('');
     setOpen(false);
   };
 
@@ -119,6 +152,7 @@ function App() {
                   <SearchIcon />
                 </div>
                 <InputBase
+                  autoFocus
                   onChange={(e) => {setTextoPesquisar(e.target.value)}}
                   value={textoPesquisar}
                   fullWidth={true}
@@ -159,6 +193,7 @@ function App() {
           </DialogContentText>
           <TextField
             autoFocus
+            onChange={(e) => {setEmail(e.target.value)}}
             margin="dense"
             id="email"
             label="Email"
@@ -166,6 +201,7 @@ function App() {
             fullWidth
           />
           <TextField
+            onChange={(e) => {setSenha(e.target.value)}}
             margin="dense"
             id="senha"
             label="Senha"
@@ -177,7 +213,7 @@ function App() {
           <Button onClick={handleClose} color="primary">
             Fechar
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleLogin} color="primary">
             OK
           </Button>
         </DialogActions>
