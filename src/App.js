@@ -19,7 +19,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ListarLivros from './components/Livros/index'
 import PaginaNaoEncontrada from './components/PaginaNaoEncontrada/index';
 import UsuariosService from './services/UsuariosService';
-import { login, logout } from './services/auth';
+import { login, logout, isAutenticado } from './services/auth';
+import MenuItem from '@material-ui/core/MenuItem';
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import Menu from '@material-ui/core/Menu';
+import Alert from '@material-ui/lab/Alert';
 
 const usuarioService = new UsuariosService();
 
@@ -90,6 +94,8 @@ function App({ history }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erroLogin, setErroLogin] = useState('');
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const abrir = Boolean(anchorEl);
 
   const handleLogin = async () => {
 
@@ -120,6 +126,7 @@ function App({ history }) {
   };
 
   const handleClose = () => {
+    setErroLogin('');
     setEmail('');
     setSenha('');
     setOpen(false);
@@ -133,6 +140,26 @@ function App({ history }) {
 
   const inicio = () => {
     window.location.href='/';
+  }
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleFecharMenu = () => {
+    setAnchorEl(null);
+  }
+
+  const handleSair = () => {
+    if(window.confirm('Deseja realmente sair do sistema?')) {
+      logout();
+      setAnchorEl(null);
+    }
+  }
+
+  const handleTrocarSenha = () => {
+    alert('Ainda não implementado.');
+    setAnchorEl(null);
   }
 
   return (
@@ -165,8 +192,40 @@ function App({ history }) {
                 />
               </form>
             </div>
-
-          <Button color="inherit" onClick={handleClickOpen}>Login</Button>
+          {isAutenticado() ? (
+            <div>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={abrir}
+              onClose={handleFecharMenu}
+            >
+              <MenuItem onClick={handleTrocarSenha}>Trocar Senha</MenuItem>
+              <MenuItem onClick={handleSair}>Sair</MenuItem>
+            </Menu>
+          </div>
+          ) : (
+            <Button color="inherit" onClick={handleClickOpen}>Login</Button>
+          )}
+          
 
         </Toolbar>
       </AppBar>
@@ -189,7 +248,16 @@ function App({ history }) {
         <DialogTitle id="form-dialog-title">Login</DialogTitle>
         <DialogContent>
           <DialogContentText align="center">
-            Informe e-mail e senha
+            Informe e-mail e senha 
+            {erroLogin && (
+              <>
+              <br /><br />
+              <Alert variant="filled" severity="error">
+                {erroLogin}
+              </Alert>
+              <br />
+              </>
+            )}
           </DialogContentText>
           <TextField
             autoFocus
