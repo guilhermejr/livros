@@ -196,7 +196,7 @@ export default function ListarLivros({ pesquisa, setPesquisa }) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Hidden>
-      <Hidden smDown>
+      <Hidden xsDown>
         <TablePagination className={classes.paginacaoRodapeFixo}
           style={{ justifyContent:"right", textAlign:"right", width: "100%", }}
           labelDisplayedRows = {({ from, to, count }) => `${from}-${to} de ${count}`}
