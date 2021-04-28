@@ -4,6 +4,12 @@ import ReactHtmlParser from 'react-html-parser';
 import {  makeStyles } from '@material-ui/core/styles';
 import LivrosService from '../../services/LivrosService';
 import ModalLivroContext from '../../contexts/ModalLivroContext';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { isAutenticado } from '../../services/auth';
+import EstantesService from '../../services/EstantesService';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -21,22 +27,48 @@ const useStyles = makeStyles((theme) => ({
         },
       },
 
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
+
 }));
 
 export default function ModalLivro() {
 
+    const { REACT_APP_API_URL } = process.env;
     const modal = useContext(ModalLivroContext);
     const [livro, setLivro] = useState({});
-    const { REACT_APP_API_URL } = process.env;
     const classes = useStyles();
     const [carregou, setCarregou] = useState(false);
+    const [estantes, setEstantes] = useState([]);
+    const [estanteId, setEstanteId] = useState(1);
+
+    const service = new LivrosService();
+    const estanteService = new EstantesService();
+
+    const handleChange = (event) => {
+      setEstanteId(event.target.value);
+      console.log(event.target.value);
+      if(window.confirm('Deseja realmente mudar o livro '+ livro.titulo +' para a estante '+ estantes[event.target.value - 1].descricao +' ?')) {
+        estanteService.mudar(livro.id, event.target.value)
+        .then((response) => {
+          setEstanteId(event.target.value);
+          console.log(livro);
+          console.log('mudou de estante');
+        })
+        .catch((error) => {
+          console.log(error.request);
+          alert(error);
+        });
+      }
+      
+    };
 
     const handleClose = () => {
         modal.setOpen(false);
         setCarregou(false);
     };
-
-    const service = new LivrosService();
 
     const carregarLivro = async (id) => {
         try {
@@ -44,6 +76,7 @@ export default function ModalLivro() {
           if (livro.status === 200) {
             setLivro(livro.data);
             setCarregou(true);
+            setEstanteId(livro.data.estante.id);
             console.log(livro.data);
           }
       
@@ -58,6 +91,18 @@ export default function ModalLivro() {
             modal.setLivro({id: 0, titulo: modal.livro.titulo, extensao: modal.livro.extensao});
         }
     }, [modal.livro.id]);
+
+    useEffect(() => {
+
+      estanteService.getAll()
+        .then((response) => {
+          setEstantes(response.data);
+        })
+        .catch((error) => {
+          alert(error);
+        });
+
+    }, []);
 
     return(
         <Dialog
@@ -92,6 +137,22 @@ export default function ModalLivro() {
                                     Ano publicação: {livro.anoPublicacao} <br />
                                     Páginas: {livro.paginas}<br/>
                                     Tipo: {livro.tipo && livro.tipo.descricao}<br/><br/>
+
+                                    {isAutenticado && (
+                                      <FormControl className={classes.formControl}>
+                                        <InputLabel id="mudar-estante">Estante</InputLabel>
+                                        <Select
+                                          labelId="mudar-estante"
+                                          id="mudar-estante-select"
+                                          value={estanteId}
+                                          onChange={handleChange}
+                                        >
+                                          {estantes.map((estante) =>
+                                            <MenuItem value={estante.id}>{estante.descricao}</MenuItem>
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    )}
                                     <hr className={classes.esconder} />
                                 </Paper>
                             </Grid>
